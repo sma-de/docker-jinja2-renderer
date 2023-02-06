@@ -1,0 +1,26 @@
+= SMA jinja2 rendering container
+
+== Introduction
+
+This repository provides jinja2 template rendering service as a docker container. It processes all _.j2_ files inside a folder, processes them and outputs them to the same location, but without the _.j2_ extension.
+
+== Usage
+
+The usage can simply be done by running the container with a mapped volume.
+
+.Example rendering all .j2 file in the current folder
+[source, shell]
+-----
+docker run -v $(pwd)/data/:/data --privileged ghcr.io/sma-de/docker-jinja2-renderer
+-----
+
+[IMPORTANT]
+=====
+You may have to tweak *SELinux*, if errors occur or the volume is not readable from within the container.
+
+.Setting SELinux permissions for Docker access
+[source, bash]
+------
+chcon -Rt svirt_sandbox_file_t $(pwd)/data/
+------
+=====
