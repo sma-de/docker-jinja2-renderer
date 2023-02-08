@@ -38,6 +38,10 @@ if __name__ == '__main__':
     files = pathlib.Path(args.path).glob("**/*.j2" if args.r else "*.j2")
 
     for file_name in files:
+        if os.path.islink(file_name):
+            logger.warning(f"Skipping symlink '{file_name}'")
+            continue
+
         logger.info(f"Processing '{file_name}'...")
 
         variables = {
