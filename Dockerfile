@@ -30,4 +30,4 @@ COPY --chmod=755 sma-jinja-renderer.py /usr/bin/sma-jinja-renderer
 
 VOLUME [ "${SMA_RENDERING_HOME}" ]
 
-CMD "/usr/bin/sma-jinja-renderer" "${SMA_RENDERING_HOME}" "-f" "-r"
+ENTRYPOINT [ "/usr/bin/sma-jinja-renderer", "${SMA_RENDERING_HOME}" ]
