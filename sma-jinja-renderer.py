@@ -36,6 +36,12 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
+        '-s', '--show-rendered',
+        help='Show rendered content in log file',
+        action='store_true'
+    )
+
+    parser.add_argument(
         '-i', '--include-templates-dir',
         help='Directories where to load jinja template from',
         action='append',
@@ -101,6 +107,9 @@ if __name__ == '__main__':
         output_file_name = os.path.splitext(f)[0]
 
         logger.info(f"Wiring to '{output_file_name}'...")
+
+        if args.show_rendered:
+            logger.info(f"Rendered content:\n{rendered}")
 
         my_file = pathlib.Path(output_file_name, encoding='UTF-8')
         if my_file.is_file() and not args.force:
