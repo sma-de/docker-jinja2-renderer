@@ -62,7 +62,7 @@ if __name__ == '__main__':
            " imports/includes inside jinja template:"
         )
 
-        logger.info(f"  {incdirs}")
+        logger.info("  {}".format(','.join(incdirs)))
 
     for f in files:
 
