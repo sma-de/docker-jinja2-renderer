@@ -24,7 +24,7 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
-        '-f',
+        '-f', '--force',
         help='Files in the destination directory will be overwritten, if they already exist',
         action='store_true'
     )
@@ -48,35 +48,48 @@ if __name__ == '__main__':
 
     files = pathlib.Path(args.path).glob("**/*.j2" if args.r else "*.j2")
 
-    for file_name in files:
-        if os.path.islink(file_name):
-            logger.warning(f"Skipping symlink '{file_name}'")
+    incdirs = []
+
+    if args.template_include_dirs:
+        for d in args.template_include_dirs:
+            if not os.path.isabs(d):
+                d = os.path.join(os.getcwd(), d)
+
+            incdirs.append(d)
+
+        logger.info(
+          f"Files inside following dirs will be avaible as"\
+           " imports/includes inside jinja template:"
+        )
+
+        logger.info(f"  {incdirs}")
+
+    for f in files:
+
+        is_incfile = False
+
+        for inc in incdirs:
+            if f.is_relative_to(inc):
+                logger.warning(f"Skipping include dir file '{f}'")
+                is_incfile = True
+                break
+
+        if is_incfile:
             continue
 
-        logger.info(f"Processing '{file_name}'...")
+        if f.is_symlink():
+            logger.warning(f"Skipping symlink '{f}'")
+            continue
+
+        logger.info(f"Processing '{f}'...")
 
         variables = {
-            'file': file_name
+            'file': str(f)
         }
 
-        content = pathlib.Path(file_name, encoding='UTF-8').read_text()
+        content = pathlib.Path(f, encoding='UTF-8').read_text()
 
-        if args.template_include_dirs:
-            incdirs = []
-
-            for d in args.template_include_dirs:
-                if not os.path.isabs(d):
-                    d = os.path.join(os.getcwd(), d)
-
-                incdirs.append(d)
-
-            logger.info(
-              f"Files inside following dirs will be avaible as"\
-               " imports/includes inside jinja template:"
-            )
-
-            logger.info(f"  {incdirs}")
-
+        if incdirs:
             template = jinja2.Environment(
                loader=jinja2.FileSystemLoader(incdirs)
             ).from_string(content)
@@ -85,12 +98,12 @@ if __name__ == '__main__':
 
         rendered = template.render(variables)
 
-        output_file_name = os.path.splitext(file_name)[0]
+        output_file_name = os.path.splitext(f)[0]
 
         logger.info(f"Wiring to '{output_file_name}'...")
 
         my_file = pathlib.Path(output_file_name, encoding='UTF-8')
-        if my_file.is_file() and not args.f:
-            logger.error(f"Can't write to existing file '{file_name}'.")
+        if my_file.is_file() and not args.force:
+            logger.error(f"Can't write to existing file '{f}'.")
         else:
             my_file.write_text(rendered)
