@@ -7,6 +7,7 @@ import pathlib
 
 import jinja2
 
+
 if __name__ == '__main__':
 
     logging.basicConfig(
@@ -21,16 +22,26 @@ if __name__ == '__main__':
         'path',
         help='Path to a folder containing the templates to process.'
     )
+
     parser.add_argument(
         '-f',
         help='Files in the destination directory will be overwritten, if they already exist',
         action='store_true'
     )
+
     parser.add_argument(
         '-r',
         help='Scan for files recursively',
         action='store_true'
     )
+
+    parser.add_argument(
+        '-i', '--include-templates-dir',
+        help='Directories where to load jinja template from',
+        action='append',
+        dest="template_include_dirs",
+    )
+
     args = parser.parse_args()
 
     logger.info(f"Working on files in '{args.path}'...")
@@ -50,7 +61,13 @@ if __name__ == '__main__':
 
         content = pathlib.Path(file_name, encoding='UTF-8').read_text()
 
-        template = jinja2.Template(content)
+        if args.template_include_dirs:
+            template = jinja2.Environment(
+               loader=jinja2.FileSystemLoader(args.template_include_dirs)
+            ).from_string(content)
+        else:
+            template = jinja2.Template(content)
+
         rendered = template.render(variables)
 
         output_file_name = os.path.splitext(file_name)[0]

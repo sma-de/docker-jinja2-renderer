@@ -1,0 +1,34 @@
+
+machines:
+
+  nexus:
+    azure:
+      vm_type: Standard_G4ds_v5
+    data_disks:
+      data:
+        size: 22222
+
+  git-dev:
+    azure:
+      vm_type: Standard_D4ds_v5aaa
+    data_disks:
+      data:
+        size: 3000
+
+  deploying:
+  foo:
+
+  nexus2:
+    data_disks:
+      data:
+        size: haha
+
+  more-git:
+    azure:
+      vm_type: Standard_D4ds_v5bbb
+
+  abar:
+  baz:
+
+  imp03_a:
+  imp03_b:

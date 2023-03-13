@@ -1,0 +1,12 @@
+
+machines:
+
+  {% from 'imp01.yml.j2' import machines as machines -%}
+  {{ machines() | indent(2) }}
+
+  {% from 'imp02.yml.j2' import machines as machines -%}
+  {{ machines() | indent(2) }}
+
+  {% from 'imp03.yml.j2' import machines as machines -%}
+  {{ machines() | indent(2) }}
+

@@ -1,0 +1,6 @@
+
+machines:
+
+  {% from 'imports.yml.j2' import machines as machines -%}
+  {{ machines() | indent(2) }}
+

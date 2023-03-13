@@ -1,0 +1,22 @@
+
+{% macro machines() -%}
+
+nexus:
+  azure:
+    vm_type: Standard_G4ds_v5
+  data_disks:
+    data:
+      size: 22222
+
+git-dev:
+  azure:
+    vm_type: Standard_D4ds_v5aaa
+  data_disks:
+    data:
+      size: 3000
+
+deploying:
+foo:
+
+{%- endmacro %}
+

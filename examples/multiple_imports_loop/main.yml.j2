@@ -1,0 +1,9 @@
+
+machines:
+
+{%- for x in ['imp01','imp02','imp03'] %}
+import {{ x }}:
+  {% from x + '.yml.j2' import machines as machines -%}
+  {{ machines() | indent(2) }}
+{% endfor %}
+
