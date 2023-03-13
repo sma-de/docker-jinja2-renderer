@@ -62,8 +62,23 @@ if __name__ == '__main__':
         content = pathlib.Path(file_name, encoding='UTF-8').read_text()
 
         if args.template_include_dirs:
+            incdirs = []
+
+            for d in args.template_include_dirs:
+                if not os.path.isabs(d):
+                    d = os.path.join(os.getcwd(), d)
+
+                incdirs.append(d)
+
+            logger.info(
+              f"Files inside following dirs will be avaible as"\
+               " imports/includes inside jinja template:"
+            )
+
+            logger.info(f"  {incdirs}")
+
             template = jinja2.Environment(
-               loader=jinja2.FileSystemLoader(args.template_include_dirs)
+               loader=jinja2.FileSystemLoader(incdirs)
             ).from_string(content)
         else:
             template = jinja2.Template(content)
