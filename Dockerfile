@@ -8,6 +8,7 @@ ARG SMA_USERID=1000
 ARG SMA_GROUP=sma
 ARG SMA_GROUPID=1000
 
+## IMPORTANT: dont overwrite this arg, as it is part of the entrypoint where we cannot use var!
 ARG SMA_RENDERING_HOME=/data
 
 ENV SMA_RENDERING_HOME=${SMA_RENDERING_HOME}
@@ -30,4 +31,4 @@ COPY --chmod=755 sma-jinja-renderer.py /usr/bin/sma-jinja-renderer
 
 VOLUME [ "${SMA_RENDERING_HOME}" ]
 
-ENTRYPOINT [ "/usr/bin/sma-jinja-renderer", "${SMA_RENDERING_HOME}" ]
+ENTRYPOINT [ "/usr/bin/sma-jinja-renderer", "/data" ]
